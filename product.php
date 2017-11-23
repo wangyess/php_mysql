@@ -54,8 +54,6 @@ class Product
         $a->execute();
         $old = $a->fetch(PDO::FETCH_ASSOC);
         $merge = array_merge($old, $rows);
-//        var_dump($merge);
-//        die();
         $sql_1 = "update product set title= :title ,price= :price, cat_id= :cat_id ,cover_url= :cover_url, stock= :stock ,des= :des where id = :id";
         $c = $this->pdo->prepare($sql_1);
         $c->execute($merge);
