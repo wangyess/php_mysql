@@ -27,19 +27,24 @@ function get_params()
     //获取一下传入的方法  是add 还是read
     $methods = @$params['action'];
     //实例化这个类   还把获取的信息传入进去
-    $a=new $klass(connect_database());
+    $a = new $klass(connect_database());
     //调用这个方法
     unset($params['model']);
     unset($params['action']);
     return $a->$methods($params);
 }
+
 //就json 的形式返回方法
-function json($data){
+function json($data)
+{
     header('Content-Type:application/json');
     return json_encode($data);
 }
+
 //页面加载后只进行函数
-function init(){
-   echo json(get_params());
+function init()
+{
+    echo json(get_params());
 }
+
 init();

@@ -15,37 +15,45 @@ class User
         $username = @$rows['username'];
         $password = @$rows['password'];
         $permission = @$rows['permission'];
+        if (!$username || !$password) {
+            return ['success' => false, 'msg' => 'invaild:username||password'];
+        }
         $sql = "insert into user (username, password, permission) values('{$username}', '{$password}', '{$permission}')";
         $row = $this->pdo->prepare($sql);
-        $row->execute();
-        return $this->read();
+        $r = $row->execute();
+        return $r ? ['success' => true] : ['success' => false, 'msg' => 'internal_error'];
     }
 
     //删除
     public function remove($rows)
     {
         $id = $rows['id'];
+        if (!$id) {
+            return ['success' => false, 'msg' => 'invaild:id'];
+        }
         $sql = "delete from user where id = ?";
         $row = $this->pdo->prepare($sql);
         $row->bindValue(1, $id);
-        $row->execute();
-        return $this->read();
+        $r = $row->execute();
+        return $r ? ['success' => true] : ['success' => false, 'msg' => 'internal_error'];
     }
 
     //更新
     public function update($rows)
     {
         $id = $rows['id'];
-        $sql = "select * from user where id = ?";
-        $aa = $this->pdo->prepare($sql);
-        $aa->bindValue(1, $id);
-        $aa->execute();
-        $data = $aa->fetch(PDO::FETCH_ASSOC);
+        if (!$id) {
+            return ['success' => false, 'msg' => 'invaild:id'];
+        }
+        $data = $this->find_item($id);
+        if (!$data) {
+            return ['success' => false, 'msg' => 'invaild:find_item'];
+        }
         $cc = array_merge($data, $rows);
         $spl = "update user set username= :username ,password= :password, permission= :permission, data= :data  where id = :id";
         $ee = $this->pdo->prepare($spl);
-        $ee->execute($cc);
-        return $this->read();
+        $r = $ee->execute($cc);
+        return $r ? ['success' => true] : ['success' => false, 'msg' => 'internal_error'];
     }
 
     //查找
@@ -62,5 +70,16 @@ class User
         ]);
         $aad = $a->fetchAll(PDO::FETCH_ASSOC);
         return $aad;
+    }
+
+    //判断数据库是否有这条
+    public function find_item($id)
+    {
+        $sql = "select * from user where id = :id";
+        $sta = $this->pdo->prepare($sql);
+        $sta->execute([
+            'id' => $id,
+        ]);
+        return $sta->fetch(PDO::FETCH_ASSOC);
     }
 }

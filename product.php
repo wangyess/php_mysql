@@ -50,7 +50,7 @@ class Product
         $id = $rows['id'];
         $sql = " select * from product where id = ? ";
         $a = $this->pdo->prepare($sql);
-        $a->bindValue(1,$id);
+        $a->bindValue(1, $id);
         $a->execute();
         $old = $a->fetch(PDO::FETCH_ASSOC);
         $merge = array_merge($old, $rows);
