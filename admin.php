@@ -11,7 +11,8 @@
             height: 740px;
             background-color: #e8efef;
         }
-        label{
+
+        label {
             margin-left: 10px;
         }
     </style>
@@ -27,7 +28,7 @@
         <form class="form-horizontal" id="my-form">
             <div class="form-group">
                 <label class="col-sm-10 control-label">
-                     <input type="hidden" name="id" class="form-control">
+                    <input type="hidden" name="id" class="form-control">
                 </label>
             </div>
             <div class="form-group">
@@ -85,7 +86,7 @@
                     <th>Cat_id</th>
                     <th>Operation</th>
                 </tr>
-                <tbody  id="first-tbody">
+                <tbody id="first-tbody">
                 </tbody>
             </table>
         </div>

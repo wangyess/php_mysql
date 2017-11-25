@@ -151,10 +151,10 @@
     function init() {
         get_cat_list();
         get_product_list();
+        console.log(product_list);
         //增加提交事件
         add_submit();
         //删除事件
-
     }
 
     init();

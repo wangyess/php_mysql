@@ -22,11 +22,12 @@ class Cat
             return ['success' => false, 'msg' => 'exist:title'];
         }
 
-        $parent_id = $rows['parent_id'];
+        $parent_id = $rows['parent_id'] ? (int)$rows['parent_id'] : null;
+
         //判断是否传parent_id
-        if (!$parent_id) {
-            return ['success' => false, 'msg' => 'invalid:parent_id'];
-        }
+//        if (!$parent_id && !is_numeric($parent_id)) {
+//            return ['success' => false, 'msg' => 'invalid:parent_id'];
+//        }
 
         $sql = "insert into cat (title,parent_id) values( '{$title}', '{$parent_id}')";
         $row = $this->pdo->prepare($sql);
@@ -63,7 +64,7 @@ class Cat
             return ['success' => false, 'msg' => 'invalid:id'];
         }
         //判断title是否重复
-        if ($this->title_exist($title)) {
+        if ($this->title_exist($title, $id)) {
             return ['success' => false, 'msg' => 'exist:title'];
         }
         $cc = array_merge($data, $rows);
@@ -78,7 +79,7 @@ class Cat
     {
         $id = $rows['id'];
         $page = $_GET['page'] ?: 1;
-        $limit = 5;
+        $limit = 10;
         $offset = $limit * ($page - 1);
 
         if ($id) {
@@ -86,7 +87,7 @@ class Cat
             $s->execute(['id' => $id]);
             $d = $s->fetch(PDO::FETCH_ASSOC);
         } else {
-            $spl = "select * from cat limit :offset, :limit";
+            $spl = "select * from cat order by id desc limit :offset, :limit";
             $row = $this->pdo->prepare($spl);
             $row->execute([
                 'offset' => $offset,
@@ -98,11 +99,18 @@ class Cat
     }
 
     //判断数据库中是否已经存在这个名字的title
-    public function title_exist($title)
+    public function title_exist($title, $id = null)
     {
         $sql = "select * from cat where title = :title";
+        $hole = ['title' => $title];
+
+        if ($id) {
+            $sql = $sql . ' and id <> :id';
+            $hole['id'] = $id;
+        }
+
         $sta = $this->pdo->prepare($sql);
-        $sta->execute(['title' => $title,]);
+        $sta->execute($hole);
         $str = $sta->fetch(PDO::FETCH_ASSOC);
         return (bool)$str;
     }

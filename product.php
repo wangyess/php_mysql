@@ -48,7 +48,7 @@ class Product
     public function update($rows)
     {
         $id = $rows['id'];
-        $sql = " select * from product where id = ? ";
+        $sql = "select * from product where id = ? ";
         $a = $this->pdo->prepare($sql);
         $a->bindValue(1, $id);
         $a->execute();
